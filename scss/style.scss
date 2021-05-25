@@ -14,8 +14,6 @@ body {
 
 button {
     border: none;
-    // height: 60px;
-    // width: 60px;
     font-size: 1.5rem;
 
     &:hover {
@@ -36,6 +34,9 @@ button {
         background-color: white;
         width: 95%;
         height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     &-bot {
@@ -53,4 +54,11 @@ button {
     grid-row-end: 6;
     grid-column-start: 4;
     grid-column-end: 5;
+}
+
+#screen-output {
+    font-size: 2rem;
+    font-family: sans-serif;
+    font-weight: 400;
+    color: #333;
 }
