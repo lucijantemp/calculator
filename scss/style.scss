@@ -14,12 +14,12 @@ body {
 
 button {
     border: none;
-    height: 60px;
-    width: 60px;
+    // height: 60px;
+    // width: 60px;
     font-size: 1.5rem;
 
     &:hover {
-        background-color: white;
+        background-color: rgb(223, 223, 223);
     }
 }
 
@@ -35,11 +35,22 @@ button {
     &-top {
         background-color: white;
         width: 95%;
-        height: 80px;
+        height: 100px;
     }
 
     &-bot {
         background-color: red;
         width: 95%;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: 60px 60px 60px 60px 60px;
+        grid-gap: 1px;
     }
+}
+
+#btn-equals {
+    grid-row-start: 4;
+    grid-row-end: 6;
+    grid-column-start: 4;
+    grid-column-end: 5;
 }
