@@ -1,4 +1,4 @@
-// SELECT ELEMENTS FROM DOM
+// ---SELECTS---
 
 // select all buttons from DOM
 const btnClear      = document.querySelector("#btn-clear");
@@ -23,6 +23,7 @@ const btnComma      = document.querySelector("#btn-comma");
 
 // select screen output container
 const screenOutput = document.querySelector("#screen-output");
+const screenOutputSec = document.querySelector("#screen-output-secondary")
 
 // define max input
 const maxDigits = 10;
@@ -30,46 +31,72 @@ const maxDigits = 10;
 // select all number btns
 const numBtns = document.querySelectorAll(".number");
 
+// select all operator btns
+const operatorBtns = document.querySelectorAll(".btn-operator")
+
+// initialize first and second number variables (will dynamicly change)
+let fNum
+let sNum
+let operator
 
 
-// BUTTONS FUNCTIONALITIES
+// ---BUTTONS---
 
-// clear button functionality
+// clear button
 btnClear.addEventListener("click", () => {
     screenOutput.innerHTML = "" 
+    screenOutputSec.innerHTML = ""
 });
 
-// del button functionality
+// del button
 btnDelete.addEventListener("click", () => {
     screenOutput.innerHTML = screenOutput.innerHTML.slice(0, -1);
 })
 
-// number btns functionality
+// number btns
 numBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-        // check if num of digits is less than max and last char is not %
-        if (digitsLessTMax(screenOutput.innerHTML) && screenOutput.innerHTML.slice(-1) != "%") {
-            screenOutput.innerHTML += btn.id[4];
+        screenOutput.innerHTML += btn.id[4];
+    })
+})
+
+// comma button
+btnComma.addEventListener("click", () => {
+    screenOutput.innerHTML += ".";
+})
+
+// percentage button
+btnPercentage.addEventListener("click", () => {
+    screenOutput.innerHTML += "%"
+})
+
+// operator buttons
+operatorBtns.forEach( btn => {
+    btn.addEventListener("click", () => {
+        // check if first number is valid
+        if (isValidNumber(screenOutput.innerHTML)) {
+            fNum = screenOutput.innerHTML
+            operator = btn.id
+            screenOutputSec.innerHTML = screenOutput.innerHTML + " " + btn.innerHTML
+            screenOutput.innerHTML = ""
+        } else {
+            console.log("wrong input")
         }
     })
 })
 
-// comma button functionality
-btnComma.addEventListener("click", () => {
-    if (digitsLessTMax(screenOutput.innerHTML) && !charInString(screenOutput.innerHTML, ".") && screenOutput.innerHTML.slice(-1) != "%") {
-        screenOutput.innerHTML += ".";
-    }
-})
-
-// percentage button functionality
-btnPercentage.addEventListener("click", () => {
-    if (digitsLessTMax(screenOutput.innerHTML) && !charInString(screenOutput.innerHTML, "%") && screenOutput.innerHTML.slice(-1) != "." && screenOutput.innerHTML.length != 0) {
-        screenOutput.innerHTML += "%"
+btnEquals.addEventListener("click", () => {
+    if (isValidNumber(screenOutput.innerHTML)) {
+        sNum = screenOutput.innerHTML
+        console.log(fNum, sNum, operator)
+    } else {
+        console.log("fucked up input")
     }
 })
 
 
-// FUNCTIONS
+
+// ---FUNCTIONS---
 
 // counts number of digits and returns true if number is less than max
 function digitsLessTMax(number) {
@@ -82,7 +109,9 @@ function digitsLessTMax(number) {
     return counter < maxDigits;
 }
 
-// counts number of commas and returns true if number is 0
-function charInString(string, char) {
-    return string.includes(char)
+// checks if input is a valid number
+function isValidNumber(string) {
+    // regular expression for a valid number
+    const re = /^(0|[1-9]\d*)(\.\d+)?\%?$/
+    return re.test(string)
 }
