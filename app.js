@@ -22,8 +22,8 @@ const btn0          = document.querySelector("#btn-0");
 const btnComma      = document.querySelector("#btn-comma");
 
 // select screen output container
-const screenOutput = document.querySelector("#screen-output");
-const screenOutputSec = document.querySelector("#screen-output-secondary")
+const screenOutput = document.querySelector(".screen-output");
+const screenOutputSec = document.querySelector(".screen-output-secondary")
 
 // define max input
 const maxLength = 10;
@@ -125,16 +125,15 @@ btnEquals.addEventListener("click", () => {
             break
     }
 
-    // check if result is valid number
+    // check if result is valid number (no errors during calculation)
+    resetAll() // reset old variables to prevent unexpected behaviour after clicking equals several times
     if (isValidNumber(result)) {
-            // check if number is int to remove decimal point
+        // check if number is int to remove decimal point
         if (result % 1 == 0) {
             screenOutput.innerHTML = parseInt(result)
         } else { 
             screenOutput.innerHTML = result
         }
-    } else {
-        resetAll()
     }
 })
 
