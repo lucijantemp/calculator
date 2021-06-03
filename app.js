@@ -17,7 +17,7 @@ const btn1          = document.querySelector("#btn-1");
 const btn2          = document.querySelector("#btn-2");
 const btn3          = document.querySelector("#btn-3");
 const btnEquals     = document.querySelector("#btn-equals");
-const btnPercentage = document.querySelector("#btn-percentage");
+const btnPercentage = document.querySelector("#btn-sign");
 const btn0          = document.querySelector("#btn-0");
 const btnComma      = document.querySelector("#btn-comma");
 
@@ -26,7 +26,7 @@ const screenOutput = document.querySelector("#screen-output");
 const screenOutputSec = document.querySelector("#screen-output-secondary")
 
 // define max input
-const maxDigits = 10;
+const maxLength = 13;
 
 // select all number btns
 const numBtns = document.querySelectorAll(".number");
@@ -37,7 +37,7 @@ const operatorBtns = document.querySelectorAll(".btn-operator")
 // initialize first and second number variables (will dynamicly change)
 let fNum
 let sNum
-let operator
+let operator = undefined
 
 
 // ---BUTTONS---
@@ -46,6 +46,9 @@ let operator
 btnClear.addEventListener("click", () => {
     screenOutput.innerHTML = "" 
     screenOutputSec.innerHTML = ""
+    fNum = 0
+    sNum = 0
+    operator = undefined
 });
 
 // del button
@@ -56,18 +59,28 @@ btnDelete.addEventListener("click", () => {
 // number btns
 numBtns.forEach(btn => {
     btn.addEventListener("click", () => {
-        screenOutput.innerHTML += btn.id[4];
+        if (screenOutput.innerHTML.length < maxLength) {
+            screenOutput.innerHTML += btn.id[4];            
+        }
     })
 })
 
 // comma button
 btnComma.addEventListener("click", () => {
-    screenOutput.innerHTML += ".";
+    if (screenOutput.innerHTML.length < maxLength) {
+        screenOutput.innerHTML += ".";
+    }
 })
 
-// percentage button
+// sign button
 btnPercentage.addEventListener("click", () => {
-    screenOutput.innerHTML += "%"
+    if (screenOutput.innerHTML.length < maxLength) {
+        if (screenOutput.innerHTML[0] == "-") { 
+            screenOutput.innerHTML = screenOutput.innerHTML.substring(1) 
+        } else {
+            screenOutput.innerHTML = "-" + screenOutput.innerHTML
+        }
+    }
 })
 
 // operator buttons
@@ -80,17 +93,55 @@ operatorBtns.forEach( btn => {
             screenOutputSec.innerHTML = screenOutput.innerHTML + " " + btn.innerHTML
             screenOutput.innerHTML = ""
         } else {
-            console.log("wrong input")
+            alert("wrong input")
         }
     })
 })
 
 btnEquals.addEventListener("click", () => {
+    // handle invalid inputs
     if (isValidNumber(screenOutput.innerHTML)) {
         sNum = screenOutput.innerHTML
-        console.log(fNum, sNum, operator)
     } else {
-        console.log("fucked up input")
+        alert("fucked up input")
+    }
+
+    // convert fnum and snum to float type
+    fNum = parseFloat(fNum)
+    sNum = parseFloat(sNum)
+
+    let result = undefined
+    switch (operator) {
+        case "btn-divide":
+            result = (fNum / sNum).toFixed(2)
+            break
+        case "btn-multiply":
+            result = (fNum * sNum).toFixed(2)
+            break
+        case "btn-subtract":
+            result = (fNum - sNum).toFixed(2)
+            break
+        case "btn-plus":
+            result = (fNum + sNum).toFixed(2)
+            break
+        case undefined:
+            alert("worng or no operator")
+            break
+    }
+
+    // update font size based on number size
+    if (result.length <= maxLength) {
+        screenOutput.style.fontSize = "2rem"
+    }
+    else if (result.length <= maxLength + 5) {
+        screenOutput.style.fontSize = "1.5rem"
+    }
+
+    // check if number is int to remove decimal point
+    if (result % 1 == 0) {
+        screenOutput.innerHTML = parseInt(result)
+    } else { 
+        screenOutput.innerHTML = result
     }
 })
 
@@ -98,20 +149,9 @@ btnEquals.addEventListener("click", () => {
 
 // ---FUNCTIONS---
 
-// counts number of digits and returns true if number is less than max
-function digitsLessTMax(number) {
-    let counter = 0;
-    for (let i=0; i<number.length; i++) {
-        if (!isNaN(number[i])) {
-            counter += 1;
-        }
-    }
-    return counter < maxDigits;
-}
-
 // checks if input is a valid number
 function isValidNumber(string) {
     // regular expression for a valid number
-    const re = /^(0|[1-9]\d*)(\.\d+)?\%?$/
+    const re = /^-?(0|[1-9]\d*)(\.|\.\d+)?$/
     return re.test(string)
 }
