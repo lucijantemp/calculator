@@ -26,7 +26,7 @@ const screenOutput = document.querySelector("#screen-output");
 const screenOutputSec = document.querySelector("#screen-output-secondary")
 
 // define max input
-const maxLength = 13;
+const maxLength = 10;
 
 // select all number btns
 const numBtns = document.querySelectorAll(".number");
@@ -37,18 +37,14 @@ const operatorBtns = document.querySelectorAll(".btn-operator")
 // initialize first and second number variables (will dynamicly change)
 let fNum
 let sNum
-let operator = undefined
+let operator = ""
 
 
 // ---BUTTONS---
 
 // clear button
 btnClear.addEventListener("click", () => {
-    screenOutput.innerHTML = "" 
-    screenOutputSec.innerHTML = ""
-    fNum = 0
-    sNum = 0
-    operator = undefined
+    resetAll()
 });
 
 // del button
@@ -93,24 +89,24 @@ operatorBtns.forEach( btn => {
             screenOutputSec.innerHTML = screenOutput.innerHTML + " " + btn.innerHTML
             screenOutput.innerHTML = ""
         } else {
-            alert("wrong input")
+            resetAll()
         }
     })
 })
 
 btnEquals.addEventListener("click", () => {
-    // handle invalid inputs
+    // check if second number is valid
     if (isValidNumber(screenOutput.innerHTML)) {
         sNum = screenOutput.innerHTML
     } else {
-        alert("fucked up input")
+        resetAll()
     }
 
     // convert fnum and snum to float type
     fNum = parseFloat(fNum)
     sNum = parseFloat(sNum)
 
-    let result = undefined
+    let result = ""
     switch (operator) {
         case "btn-divide":
             result = (fNum / sNum).toFixed(2)
@@ -124,24 +120,21 @@ btnEquals.addEventListener("click", () => {
         case "btn-plus":
             result = (fNum + sNum).toFixed(2)
             break
-        case undefined:
-            alert("worng or no operator")
+        default:
+            resetAll()
             break
     }
 
-    // update font size based on number size
-    if (result.length <= maxLength) {
-        screenOutput.style.fontSize = "2rem"
-    }
-    else if (result.length <= maxLength + 5) {
-        screenOutput.style.fontSize = "1.5rem"
-    }
-
-    // check if number is int to remove decimal point
-    if (result % 1 == 0) {
-        screenOutput.innerHTML = parseInt(result)
-    } else { 
-        screenOutput.innerHTML = result
+    // check if result is valid number
+    if (isValidNumber(result)) {
+            // check if number is int to remove decimal point
+        if (result % 1 == 0) {
+            screenOutput.innerHTML = parseInt(result)
+        } else { 
+            screenOutput.innerHTML = result
+        }
+    } else {
+        resetAll()
     }
 })
 
@@ -154,4 +147,13 @@ function isValidNumber(string) {
     // regular expression for a valid number
     const re = /^-?(0|[1-9]\d*)(\.|\.\d+)?$/
     return re.test(string)
+}
+
+// resets all variables, will use it to handle errors mostly and for clear button
+function resetAll() {
+    screenOutput.innerHTML = "" 
+    screenOutputSec.innerHTML = ""
+    fNum = 0
+    sNum = 0
+    operator = ""
 }
