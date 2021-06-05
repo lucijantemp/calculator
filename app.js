@@ -26,7 +26,7 @@ const screenOutput = document.querySelector(".screen-output");
 const screenOutputSec = document.querySelector(".screen-output-secondary")
 
 // define max input
-const maxLength = 10;
+const maxLength = 15;
 
 // select all number btns
 const numBtns = document.querySelectorAll(".number");
@@ -127,13 +127,15 @@ btnEquals.addEventListener("click", () => {
 
     // check if result is valid number (no errors during calculation)
     resetAll() // reset old variables to prevent unexpected behaviour after clicking equals several times
-    if (isValidNumber(result)) {
+    if (isValidNumber(result) && result.length <= maxLength + 3) {
         // check if number is int to remove decimal point
         if (result % 1 == 0) {
             screenOutput.innerHTML = parseInt(result)
         } else { 
             screenOutput.innerHTML = result
         }
+    } else {
+        resetAll()
     }
 })
 
